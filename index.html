@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Catch Them All 💖</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ---------- GLOBAL BACKGROUND ---------- */
+body, .screen {
+  background: url("images/pink.jpg") center / cover no-repeat fixed;
+}
+
+/* ---------- SCREENS ---------- */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.screen.active {
+  display: flex;
+}
+
+button {
+  padding: 14px 26px;
+  font-size: 16px;
+  border-radius: 999px;
+  border: none;
+  background: #ff6fae;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ---------- GAME AREA ---------- */
+#gameArea {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+/* ---------- POKEMON ---------- */
+.pokemon-wrap {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  z-index: 10;
+}
+.pokemon {
+  width: 90px;
+  height: 90px;
+  margin: auto;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------- CAT ---------- */
+.cat {
+  position: absolute;
+  width: 110px;
+  z-index: 5;
+}
+
+/* ---------- POKEBALL ---------- */
+.catchBall {
+  position: absolute;
+  width: 100px;
+  z-index: 30;
+  pointer-events: none;
+  animation: catchAnim 0.6s ease-out forwards;
+}
+@keyframes catchAnim {
+  0% { transform: scale(0.3); opacity: 0; }
+  40% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.1); opacity: 0; }
+}
+
+/* ---------- PAW PRINT ---------- */
+.paw {
+  position: absolute;
+  font-size: 22px;
+  pointer-events: none;
+  animation: pawFade 1.2s forwards;
+}
+@keyframes pawFade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ---------- LETTER ---------- */
+#paper {
+  width: 92%;
+  max-width: 420px;
+  max-height: 80vh;
+  background: #fffafc;
+  border-radius: 16px;
+  overflow: hidden;
+  transform-origin: top;
+  animation: unfoldPaper 1.2s ease forwards;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  position: relative;
+}
+@keyframes unfoldPaper {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+/* shadow pulse synced to music */
+#paper.pulse {
+  animation: shadowPulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes shadowPulse {
+  from { box-shadow: 0 18px 35px rgba(0,0,0,0.25); }
+  to   { box-shadow: 0 26px 50px rgba(255,105,180,0.45); }
+}
+
+.paper-inner {
+  padding: 22px 20px;
+  overflow-y: auto;
+  max-height: 80vh;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #444;
+}
+.paper-inner p {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.signature {
+  margin-top: 24px;
+  text-align: right;
+  font-weight: 600;
+  opacity: 0;
+}
+
+/* ---------- SPARKLE OVERLAY ---------- */
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #fff, #ff9ecf);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkleFloat 1.5s ease-out forwards;
+}
+@keyframes sparkleFloat {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-40px) scale(0.2); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<div id="startScreen" class="screen active">
+  <h2>💖 Catch Them All 💖</h2>
+  <button onclick="startGame()">Start</button>
+</div>
+
+<!-- GAME -->
+<div id="gameScreen" class="screen">
+  <div id="gameArea"></div>
+</div>
+
+<!-- WIN -->
+<div id="winScreen" class="screen">
+  <h2>✨ You caught them all ✨</h2>
+  <button id="surpriseBtn">Click to see surprise 💌</button>
+</div>
+
+<!-- LETTER -->
+<div id="letterScreen" class="screen">
+  <div id="paper">
+    <div class="paper-inner">
+      <p>Happy Retreat Muzel! 🐱💖</p>
+      <p>Just wanna say na I really appreciate you...</p>
+      <p>What I admire about you is kung gaano ka kathoughtful...</p>
+      <p>Gusto ko lang din sabihin na it goes both ways...</p>
+      <p>Thank you din sa pagbuhat sa amin ni Mazi sa Dota...</p>
+      <p>I hope during this retreat, makapag-focus ka sa goals mo...</p>
+      <p>Yun lang. Ingat palagi poooo. Enjoy your retreat!</p>
+      <div class="signature">Your plus one,<br>Meow 🐾💖</div>
+    </div>
+  </div>
+</div>
+
+<audio id="bgMusic" src="music.mp3" preload="auto"></audio>
+
+<script>
+const gameArea = document.getElementById("gameArea");
+const music = document.getElementById("bgMusic");
+
+const pokemonList = [
+  { name: "gengar", src: "images/gengar.png" },
+  { name: "arcanine", src: "images/arcanine.png" },
+  { name: "salamence", src: "images/salamence.png" }
+];
+
+let caught = {};
+let mouseX = innerWidth / 2;
+let mouseY = innerHeight / 2;
+
+/* ---------- START ---------- */
+function startGame() {
+  startScreen.classList.remove("active");
+  gameScreen.classList.add("active");
+
+  spawnCat();
+  setInterval(spawnPokemon, 900);
+}
+
+/* ---------- POKEMON ---------- */
+function spawnPokemon() {
+  const p = pokemonList[Math.floor(Math.random() * pokemonList.length)];
+  const wrap = document.createElement("div");
+  wrap.className = "pokemon-wrap";
+  wrap.style.left = Math.random() * (innerWidth - 120) + "px";
+  wrap.style.top = "-120px";
+
+  const img = document.createElement("img");
+  img.src = p.src;
+  img.className = "pokemon";
+  wrap.appendChild(img);
+  gameArea.appendChild(wrap);
+
+  let speed = 1 + Math.random() * 1.5;
+  function fall() {
+    wrap.style.top = wrap.offsetTop + speed + "px";
+    if (wrap.offsetTop < innerHeight + 120) requestAnimationFrame(fall);
+    else wrap.remove();
+  }
+  fall();
+
+  wrap.onclick = () => catchPokemon(wrap, p.name);
+}
+
+function catchPokemon(wrap, name) {
+  const ball = document.createElement("img");
+  ball.src = "images/pokeball (2).png";
+  ball.className = "catchBall";
+  ball.style.left = wrap.offsetLeft + "px";
+  ball.style.top = wrap.offsetTop + "px";
+  gameArea.appendChild(ball);
+
+  wrap.querySelector("img").style.opacity = 0;
+
+  if (!caught[name]) caught[name] = true;
+
+  setTimeout(() => {
+    wrap.remove();
+    ball.remove();
+    if (pokemonList.every(p => caught[p.name])) {
+      gameScreen.classList.remove("active");
+      winScreen.classList.add("active");
+    }
+  }, 600);
+}
+
+/* ---------- CAT ---------- */
+function spawnCat() {
+  const cat = document.createElement("img");
+  cat.src = "images/meow.png";
+  cat.className = "cat";
+  cat.style.left = "50%";
+  cat.style.top = "50%";
+  gameArea.appendChild(cat);
+
+  function chase() {
+    cat.style.left = cat.offsetLeft + (mouseX - cat.offsetLeft) * 0.01 + "px";
+    cat.style.top = cat.offsetTop + (mouseY - cat.offsetTop) * 0.01 + "px";
+    requestAnimationFrame(chase);
+  }
+  chase();
+
+  cat.onclick = () => location.reload();
+}
+
+/* ---------- PAW PRINT ---------- */
+document.addEventListener("pointerdown", e => {
+  const paw = document.createElement("div");
+  paw.className = "paw";
+  paw.textContent = "🐾";
+  paw.style.left = e.clientX + "px";
+  paw.style.top = e.clientY + "px";
+  gameArea.appendChild(paw);
+  setTimeout(() => paw.remove(), 1200);
+});
+
+/* ---------- MOUSE ---------- */
+document.addEventListener("pointermove", e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+/* ---------- LETTER + MUSIC ---------- */
+document.getElementById("surpriseBtn").onclick = () => {
+  winScreen.classList.remove("active");
+  letterScreen.classList.add("active");
+
+  music.volume = 0;
+  music.play();
+
+  let v = 0;
+  const fade = setInterval(() => {
+    v += 0.05;
+    music.volume = Math.min(v, 1);
+    if (v >= 1) clearInterval(fade);
+  }, 150);
+
+  animateLetter();
+  sparkleLoop();
+};
+
+/* ---------- LETTER TEXT ANIMATION ---------- */
+function animateLetter() {
+  const els = document.querySelectorAll("#paper p, #paper .signature");
+  els.forEach((el, i) => {
+    setTimeout(() => {
+      el.style.opacity = 1;
+      el.style.transform = "translateY(0)";
+    }, i * 700);
+  });
+
+  document.getElementById("paper").classList.add("pulse");
+}
+
+/* ---------- SPARKLES ---------- */
+function sparkleLoop() {
+  const paper = document.getElementById("paper");
+  setInterval(() => {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = Math.random() * paper.offsetWidth + "px";
+    s.style.top = paper.offsetHeight - 20 + "px";
+    paper.appendChild(s);
+    setTimeout(() => s.remove(), 1500);
+  }, 200);
+}
+</script>
+
+</body>
+</html>
