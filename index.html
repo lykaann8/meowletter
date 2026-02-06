@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch the Pokémon</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Comic Sans MS",cursive;
+  background:#ffe6f2;
+  overflow:hidden;
+}
+
+/* ---------- SCREENS ---------- */
+.screen{
+  display:none;
+  position:fixed;
+  inset:0;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+.screen.active{display:flex}
+
+/* ---------- GAME ---------- */
+#gameScreen{
+  background:url("images/pink.jpg") center/cover no-repeat;
+}
+#gameArea{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+#instructions{
+  position:absolute;
+  top:15px;
+  background:rgba(255,255,255,0.85);
+  padding:12px 20px;
+  border-radius:20px;
+  font-size:18px;
+  z-index:10;
+}
+
+/* ---------- FALLING OBJECTS ---------- */
+.falling{
+  position:absolute;
+  width:90px;
+  cursor:pointer;
+  animation:fall linear forwards;
+}
+.cat{
+  animation:fall 7s linear forwards, wiggle 1s infinite;
+}
+.decor{
+  width:45px;
+  opacity:0.6;
+  pointer-events:none;
+}
+
+@keyframes fall{
+  from{top:-120px}
+  to{top:110vh}
+}
+@keyframes wiggle{
+  0%{transform:rotate(0)}
+  25%{transform:rotate(5deg)}
+  50%{transform:rotate(-5deg)}
+  75%{transform:rotate(5deg)}
+  100%{transform:rotate(0)}
+}
+
+/* ---------- CATCH BALL ---------- */
+.catchBall{
+  position:absolute;
+  width:90px;
+  pointer-events:none;
+  animation:catch 0.5s ease-out forwards;
+  z-index:20;
+}
+
+/* OPTIONAL CUTE SHAKE */
+@keyframes catch{
+  0%   { transform:scale(0.6) rotate(0deg); opacity:0; }
+  30%  { transform:scale(1.1) rotate(20deg); opacity:1; }
+  50%  { transform:rotate(-20deg); }
+  70%  { transform:rotate(15deg); }
+  100% { transform:scale(0.2) rotate(360deg); opacity:0; }
+}
+
+/* ---------- BUTTON ---------- */
+button{
+  padding:15px 30px;
+  border:none;
+  border-radius:25px;
+  background:#ff69b4;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+}
+button:hover{transform:scale(1.05)}
+
+#winBtn{display:none;z-index:10}
+
+/* ---------- LOSE ---------- */
+#loseScreen{
+  background:#000;
+  color:white;
+  text-align:center;
+}
+#loseScreen h1{margin-bottom:20px}
+
+/* ---------- LETTER ---------- */
+#letterScreen{
+  background:#ffd6eb;
+  overflow-y:auto;
+}
+#paper{
+  background:white;
+  margin:40px;
+  padding:30px;
+  max-width:700px;
+  border-radius:20px;
+  box-shadow:0 0 20px rgba(0,0,0,0.2);
+  animation:fadeIn 1s ease;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ---------- GAME SCREEN ---------- -->
+<div id="gameScreen" class="screen active">
+  <div id="instructions">
+    Catch one of each Pokémon to see a surprise!  
+    <br>Don’t catch the cats 🐱
+  </div>
+  <div id="gameArea"></div>
+  <button id="winBtn">See your surprise 💖</button>
+</div>
+
+<!-- ---------- LOSE SCREEN ---------- -->
+<div id="loseScreen" class="screen">
+  <h1>The cats like their freedom 😿</h1>
+  <p>Try again?</p><br>
+  <button onclick="restart()">Retry</button>
+</div>
+
+<!-- ---------- LETTER SCREEN ---------- -->
+<div id="letterScreen" class="screen">
+  <div id="paper">
+   <p>Happy Retreat Muzel! 🐱💖</p>
+    <p>Just wanna say na I really appreciate you. Like sobrang random pero minsan napapaisip lang ako na ang bait mo talaga haha. Salamat sa pagiging alarm clock ko sa umaga and sa pag-remind sa akin na kailangan ko kumain. Parang kinacareer mo na nga yung sinabi mong aalagaan mo ako ah hahaaha 🐾</p>
+    <p>What I admire about you is kung gaano ka kathoughtful. Hindi lang sa words or actions mo, but sa way mo makinig and magalala without making it feel heavy. Yung Meowmeow cafe, maybe small thing lang siya for some, pero na appreciate ko talaga yun. It says a lot about who you are.</p>
+    <p>Gusto ko lang din sabihin na it goes both ways. Andito lang din ako if need mo ng kausap, taga gising, o kahit taga inis lang hihi. Sorry din kasi laging puyat ka dahil saken huhu, I’ll try my best na wag na tayo mag sobrang puyat (no promises though).</p>
+    <p>Thank you din sa pagbuhat sa amin ni Mazi sa Dota. Sobrang lakas mo pooo. Pag ikaw carry buhat na buhat talaga ang laro parang wala na kaming gagawin lol. Pero aside from that, ang saya mo lang talaga kasama. I found myself looking forward sa mga tawag at laro natin, kahit minsan wala naman pinaguusapan like kung working ako. Thank you nga pala sa pag tambay while I'm working.</p>
+    <p>I hope during this retreat, makapag-focus ka sa goals mo in life. Alam kong may patutunguhan lahat ng efforts mo. Makakarating ka din sa dreams mo, one step at a time. And I know ma aachieve mo lahat ng gusto mong ma-achieve, kasi I believe in you and in your potential.</p>
+    <p>Good luck nga pala sa OJT mo. I wish you success, growth, at lahat ng good things in life. Deserve mo lahat ng yun pooo.</p>
+    <p>P.S. Sobrang random lang pero I just want you to know na ang gaan mong kasama. Yung presence mo mismo nakaka comfort kahit wala naman ginagawa or sinasabi. Hindi lahat ganun so thank you for being that kind of person.</p>
+    <p>Also, ang funny lang din isipin na before nag watch lang kme ni mazi sa solo grind mo tas ngayon kasama ka na sa mga small parts ng araw ko. hahahahaha</p>
+    <p>Last thing pala, don’t forget to rest ha? Nakaka worry na yung pagpupuyat mo. Yoko maging bad influence sa life mo.</p>
+    <p>Yun lang. Ingat palagi poooo. Enjoy your retreat!</p>
+    <b>Your plus one, Meow 🐾💖</b></p>
+  </div>
+</div>
+
+<!-- ---------- AUDIO ---------- -->
+<audio id="bgMusic" src="music.mp3" loop></audio>
+<audio id="sadMusic" src="sad.mp3" loop></audio>
+
+<script>
+const gameArea=document.getElementById("gameArea");
+const winBtn=document.getElementById("winBtn");
+
+const caught={salamence:false,gengar:false,arcanine:false};
+
+function spawn(type,src){
+  const img=document.createElement("img");
+  img.src=src;
+  img.className="falling "+type;
+  img.style.left=Math.random()*90+"vw";
+  img.style.animationDuration=(5+Math.random()*3)+"s";
+  gameArea.appendChild(img);
+
+  img.onclick=()=>{
+    if(type==="pokemon"){
+      const name=src.split("/").pop().split(".")[0];
+      caught[name]=true;
+
+      const rect=img.getBoundingClientRect();
+      const areaRect=gameArea.getBoundingClientRect();
+
+      const ball=document.createElement("img");
+      ball.src="images/pokeball (2).png";
+      ball.className="catchBall";
+      ball.style.left=(rect.left-areaRect.left)+"px";
+      ball.style.top=(rect.top-areaRect.top)+"px";
+      gameArea.appendChild(ball);
+
+      img.style.visibility="hidden";
+
+      setTimeout(()=>{
+        ball.remove();
+        img.remove();
+        if(Object.values(caught).every(v=>v)){
+          winBtn.style.display="block";
+        }
+      },500);
+    }
+
+    if(type==="cat"){
+      document.getElementById("bgMusic").pause();
+      document.getElementById("sadMusic").play();
+      document.getElementById("gameScreen").classList.remove("active");
+      document.getElementById("loseScreen").classList.add("active");
+    }
+  };
+
+  img.onanimationend=()=>img.remove();
+}
+
+/* SPAWN LOOP */
+setInterval(()=>{
+  spawn("pokemon","images/salamence.png");
+  spawn("pokemon","images/gengar.png");
+  spawn("pokemon","images/arcanine.png");
+  spawn("cat","images/cat.png");
+},1500);
+
+setInterval(()=>{
+  const d=document.createElement("img");
+  d.src="images/pokeball (2).png";
+  d.className="falling decor";
+  d.style.left=Math.random()*100+"vw";
+  d.style.animationDuration="10s";
+  gameArea.appendChild(d);
+  d.onanimationend=()=>d.remove();
+},800);
+
+/* WIN */
+winBtn.onclick=()=>{
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("letterScreen").classList.add("active");
+  document.getElementById("bgMusic").play();
+};
+
+/* RETRY */
+function restart(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
