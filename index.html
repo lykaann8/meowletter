@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Retreat 💖</title>
+<style>
+body {
+  margin:0; padding:0;
+  font-family:'Comic Sans MS', cursive, sans-serif;
+  text-align:center;
+  overflow-x:hidden;
+  background:url('pink.jpg') center/cover no-repeat;
+  background-size:cover;
+  position:relative;
+}
+h1 { margin-top:30px; font-size:2.5em; color:#ff5fa2; text-shadow:2px 2px 0 #fff; }
+button {
+  margin-top:20px; padding:12px 28px; font-size:20px;
+  background:#ff69b4;color:white;border:none;border-radius:16px;
+  cursor:pointer; box-shadow:0 5px 12px rgba(0,0,0,0.25);
+  transition:all 0.3s ease;
+}
+button:hover { background:#ff85c1; transform:scale(1.1); }
+#instructions { font-size:1.2em; color:#ff4fa0; margin:20px; }
+#miniGame, #letterScreen, #tryAgain { position:relative; display:block; max-width:100%; height:auto; }
+
+#letter {
+  display:none; max-width:90%; margin:50px auto; padding:35px;
+  background: rgba(255,240,247,0.95);
+  border-radius:24px; box-shadow:0 15px 30px rgba(0,0,0,0.3);
+  text-align:left; line-height:1.8;
+  transform: scale(0.8) rotateX(-20deg);
+  transform-origin:top center;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position:relative;
+}
+#letter.show { display:block; transform:scale(1) rotateX(0deg); animation:bounceOpen 0.6s;}
+#letter::before {
+  content:"🐾 💕 🐾";
+  position:absolute; top:-20px; left:50%;
+  transform:translateX(-50%);
+  background: rgba(255,240,247,0.95); padding:0 10px; font-size:22px;
+  border-radius:12px;
+}
+.signature { margin-top:30px; font-weight:bold; text-align:right; }
+
+#tryAgain {
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(255,240,247,0.95);
+  z-index:1000;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  font-size:1.5em; color:#ff4fa0;
+}
+#tryAgain button { margin-top:20px; }
+
+/* FALLING/ROTATING/FLYING */
+.falling {
+  position:fixed; top:-100px; z-index:10;
+  animation:fall linear forwards;
+  opacity:0.8;
+}
+@keyframes fall {
+  0% { transform:translateY(0) rotate(0deg); opacity:0.8; }
+  50% { transform:translateY(50vh) rotate(180deg); opacity:1; }
+  100% { transform:translateY(110vh) rotate(360deg); opacity:0; }
+}
+@keyframes float { 0%{transform:translateY(0px) rotate(-5deg);}50%{transform:translateY(15px) rotate(5deg);}100%{transform:translateY(0px) rotate(-5deg);} }
+@keyframes wiggle {0%{transform:translateX(0) rotate(-5deg);}25%{transform:translateX(5px) rotate(5deg);}50%{transform:translateX(-5px) rotate(-5deg);}75%{transform:translateX(5px) rotate(5deg);}100%{transform:translateX(0) rotate(-5deg);} }
+@keyframes sparkleAnim {0%{transform:scale(0);opacity:1;}50%{transform:scale(1.5);opacity:1;}100%{transform:scale(0);opacity:0;} }
+@keyframes bounceOpen { 0%{transform:scale(0.8) rotateX(-20deg);}50%{transform:scale(1.05) rotateX(5deg);}100%{transform:scale(1) rotateX(0deg);} }
+
+.sparkle {
+  position:absolute; width:20px; pointer-events:none;
+  animation:sparkleAnim 0.8s forwards;
+}
+
+@media (max-width:600px){
+  h1{font-size:2em;}
+  button{font-size:18px; padding:10px 24px;}
+  #letter{padding:25px;}
+}
+</style>
+</head>
+<body>
+
+<h1>Happy Retreat 💖</h1>
+<div id="instructions">Catch the Pokémon to see your surprise! 🐾<br>Don't catch the cats!</div>
+<div id="miniGame"></div>
+
+<div id="letterScreen">
+  <div id="letter">
+    <p>Happy Retreat Muzel! 🐱💖</p>
+    <p>Just wanna say na I really appreciate you. Like sobrang random pero minsan napapaisip lang ako na ang bait mo talaga haha. Salamat sa pagiging alarm clock ko sa umaga and sa pag-remind sa akin na kailangan ko kumain. Parang kinacareer mo na nga yung sinabi mong aalagaan mo ako ah hahaaha 🐾</p> 
+    <p>What I admire about you is kung gaano ka kathoughtful. Hindi lang sa words or actions mo, but sa way mo makinig and magalala without making it feel heavy. Yung Meowmeow cafe, maybe small thing lang siya for some, pero na appreciate ko talaga yun. It says a lot about who you are.</p> 
+    <p>Gusto ko lang din sabihin na it goes both ways. Andito lang din ako if need mo ng kausap, taga gising, or kahit taga inis lang hihi. Sorry din kasi laging puyat ka dahil saken huhu, I’ll try my best na wag na tayo mag sobrang puyat (no promises though).</p> 
+    <p>Thank you din sa pagbuhat sa amin ni Mazi sa Dota. Sobrang lakas mo pooo. Pag ikaw carry buhat na buhat talaga ang laro parang wala na kaming gagawin lol. Pero aside from that, ang saya mo lang talaga kasama. I found myself looking forward sa mga tawag at laro natin, kahit minsan wala naman pinaguusapan like kung working ako. Thank you nga pala sa pag tambay while I'm working.</p> 
+    <p>I hope during this retreat, makapag-focus ka sa goals mo in life. Alam kong may patutunguhan lahat ng efforts mo. Makakarating ka din sa dreams mo, one step at a time. And I know ma aachieve mo lahat ng gusto mong ma-achieve, kasi I believe in you and in your potential.</p> 
+    <p>Good luck nga pala sa OJT mo. I wish you success, growth, and lahat ng good things in life. Deserve mo lahat ng yun pooo.</p> 
+    <p>P.S. Sobrang random lang pero I just want you to know na ang gaan mong kasama. Yung presence mo mismo nakaka comfort kahit wala naman ginagawa or sinasabi. Hindi lahat ganun so thank you for being that kind of person.</p> 
+    <p>Also, ang funny lang din isipin na before nag watch lang kme ni mazi sa solo grind mo tas ngayon kasama ka na sa mga small parts ng araw ko. hahahahaha</p> 
+    <p>Last thing pala, don’t forget to rest ha? Nakaka worry na yung pagpupuyat mo. Yoko maging bad influence sa life mo.</p> 
+    <p>Yun lang. Ingat palagi poooo. Enjoy your retreat!</p>
+    <div class="signature">Your plus one,<br>Meow 🐱💕</div>
+  </div>
+</div>
+
+<div id="tryAgain">
+  <div>The cats want to stay free! 😿<br>Try again!</div>
+  <button id="restartBtn">Retry</button>
+</div>
+
+<audio id="music" src="music.mp3"></audio>
+<audio id="catsMusic" src="cats.mp3"></audio>
+
+<script>
+const miniGame=document.getElementById('miniGame');
+const letterScreen=document.getElementById('letterScreen');
+const tryAgain=document.getElementById('tryAgain');
+const restartBtn=document.getElementById('restartBtn');
+const music=document.getElementById('music');
+const catsMusic=document.getElementById('catsMusic');
+
+const pokemonTypes=["images/arcanine.png","images/gengar.png","images/salamence.png"];
+const catImages=["images/meow.png"];
+const decorative=["images/pokeball (2).png"];
+
+let caught={}; pokemonTypes.forEach(p=>caught[p]=false);
+
+// SPAWN OBJECT
+function spawnObject(src,size,type){
+  const img=document.createElement('img');
+  img.src=src; img.style.width=size+'px';
+  img.style.position='absolute';
+  img.style.top=Math.random()*50+'vh';
+  img.style.left=Math.random()*80+'vw';
+  img.style.cursor='pointer';
+  miniGame.appendChild(img);
+
+  if(type==='pokemon'||type==='cat'){img.style.animation='float '+(3+Math.random()*2)+'s ease-in-out infinite';}
+
+  // Pokémon hover: move away slightly
+  if(type==='pokemon'){
+    img.addEventListener('mouseenter', ()=>{
+      img.style.transform='translateY(-10px) translateX(-5px)';
+      setTimeout(()=>{img.style.transform='';},300);
+    });
+  }
+
+  img.addEventListener('click',()=>{
+    if(pokemonTypes.includes(src)){
+      if(!caught[src]){
+        caught[src]=true;
+        const ball=document.createElement('img');
+        ball.src='images/pokeball.png';
+        ball.style.width='50px';
+        ball.style.position='absolute';
+        ball.style.left=img.offsetLeft+'px';
+        ball.style.top=img.offsetTop+'px';
+        miniGame.appendChild(ball);
+        setTimeout(()=>ball.remove(),800);
+
+        // Sparkles
+        for(let i=0;i<5;i++){
+          const sparkle=document.createElement('img');
+          sparkle.src='images/pokeball.png';
+          sparkle.className='sparkle';
+          sparkle.style.left=img.offsetLeft+Math.random()*30+'px';
+          sparkle.style.top=img.offsetTop+Math.random()*30+'px';
+          miniGame.appendChild(sparkle);
+          setTimeout(()=>sparkle.remove(),800);
+        }
+      }
+      img.remove(); checkVictory();
+    } else if(catImages.includes(src)){
+      miniGame.style.display='none';
+      tryAgain.style.display='flex';
+      catsMusic.play();
+    }
+  });
+
+  if(type==='cat'){
+    let dir=1;
+    setInterval(()=>{
+      let left=parseFloat(img.style.left);
+      img.style.left=(left+dir*0.5)+'px';
+      if(left<0||left>80) dir*=-1;
+    },50);
+  }
+}
+
+// SPAWN ALL
+function spawnAll(){
+  for(let i=0;i<25;i++){
+    const deco=document.createElement('img');
+    deco.src=decorative[0]; deco.className='falling';
+    deco.style.width=20+Math.random()*20+'px';
+    deco.style.left=Math.random()*90+'vw';
+    deco.style.animationDuration=(5+Math.random()*5)+'s';
+    miniGame.appendChild(deco);
+  }
+  for(let i=0;i<6;i++){ pokemonTypes.forEach(p=>spawnObject(p,80,'pokemon')); }
+  for(let i=0;i<6;i++){ catImages.forEach(c=>spawnObject(c,60,'cat')); }
+
+  // Random background sparkles
+  setInterval(()=>{
+    const sparkle=document.createElement('img');
+    sparkle.src='images/pokeball.png';
+    sparkle.className='sparkle';
+    sparkle.style.left=Math.random()*90+'vw';
+    sparkle.style.top=Math.random()*80+'vh';
+    miniGame.appendChild(sparkle);
+    setTimeout(()=>sparkle.remove(),1000);
+  },800);
+}
+
+spawnAll();
+
+// CHECK VICTORY
+function checkVictory(){
+  if(Object.values(caught).every(v=>v)){
+    miniGame.style.display='none';
+    letterScreen.style.display='block';
+    music.play();
+  }
+}
+
+// RESTART
+restartBtn.addEventListener('click',()=>{
+  tryAgain.style.display='none';
+  catsMusic.pause(); catsMusic.currentTime=0;
+  miniGame.innerHTML='';
+  caught={}; pokemonTypes.forEach(p=>caught[p]=false);
+  spawnAll();
+});
+</script>
+</body>
+</html>
